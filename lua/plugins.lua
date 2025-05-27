@@ -31,9 +31,8 @@ require("lazy").setup({
         {
             "rebelot/kanagawa.nvim", 
             config = function()
-                vim.cmd.colorscheme("kanagawa-wave")
-            end,
-
+                vim.cmd.colorscheme("kanagawa-dragon")
+            end
         },
         {
             "nvim-treesitter/nvim-treesitter",
@@ -115,21 +114,23 @@ require("lazy").setup({
         },
         {
             "williamboman/mason-lspconfig.nvim",
-            dependencies = {"mason.nvim", "saghen/blink.cmp"}, 
+            dependencies = {"neovim/nvim-lspconfig", "saghen/blink.cmp"}, 
             config = function() 
-
+                -- Get capabilities from blink.cmp
                 local capabilities = require('blink.cmp').get_lsp_capabilities()
-                require("mason-lspconfig").setup()
-                require("mason-lspconfig").setup_handlers({
-                    -- The first entry (without a key) will be the default handler
-                    -- and will be called for each installed server that doesn't have
-                    -- a dedicated handler.
-                    function (server_name) -- default handler (optional)
-                        require("lspconfig")[server_name].setup({capabilities = capabilities})
-                        
-                    end,
-                    -- Next, you can provide a dedicated handler for specific servers.
-                    -- For example, a handler override for the `rust_analyzer`:
+
+                -- Mason v2 setup with automatic installation
+                require("mason-lspconfig").setup({
+                    automatic_installation = true,
+                    -- Setup handlers for each language server
+                    handlers = {
+                        -- Default handler applies capabilities to all servers
+                        function(server_name)
+                            require("lspconfig")[server_name].setup({
+                                capabilities = capabilities,
+                            })
+                        end,
+                    },
                 })
             end,
         },
@@ -145,6 +146,15 @@ require("lazy").setup({
             'nvim-telescope/telescope.nvim', tag = '0.1.8',
             dependencies = { 'nvim-lua/plenary.nvim' },
             config = function()
+                require('telescope').setup({
+                    defaults = {
+                        file_ignore_patterns = {
+                            'node_modules',
+                            '.git',
+                            'dist',
+                        },
+                    },
+                })
                 vim.keymap.set("n", "<Leader>ff", require("telescope.builtin").find_files)
                 vim.keymap.set("n", "<Leader>en", function()
                     require("telescope.builtin").find_files {
@@ -194,7 +204,7 @@ require("lazy").setup({
                 fuzzy = { implementation = "prefer_rust_with_warning" }
             },
             opts_extend = { "sources.default" }
-        }
+        },
     },
     -- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.
