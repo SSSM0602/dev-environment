@@ -28,10 +28,12 @@ vim.g.maplocalleader = "\\"
 require("lazy").setup({
     spec = {
         -- add your plugins here
-        {
-            "rebelot/kanagawa.nvim", 
+        { 
+            "catppuccin/nvim", 
+            name = "catppuccin",
+            priority = 1000,
             config = function()
-                vim.cmd.colorscheme("kanagawa-dragon")
+                vim.cmd.colorscheme("catppuccin-mocha")
             end
         },
         {
@@ -152,6 +154,7 @@ require("lazy").setup({
                             'node_modules',
                             '.git',
                             'dist',
+                            '__pycache__'
                         },
                     },
                 })
@@ -205,6 +208,39 @@ require("lazy").setup({
             },
             opts_extend = { "sources.default" }
         },
+
+        {
+            "folke/noice.nvim",
+            event = "VeryLazy",
+            opts = {
+                -- add any options here
+            },
+            dependencies = {
+                -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+                "MunifTanjim/nui.nvim",
+                -- OPTIONAL:
+                --   `nvim-notify` is only needed, if you want to use the notification view.
+                --   If not available, we use `mini` as the fallback
+                "rcarriga/nvim-notify",
+            }
+        },
+        {
+            'nvim-lualine/lualine.nvim',
+            dependencies = { 'nvim-tree/nvim-web-devicons' },
+            config = function()
+                require('lualine').setup{
+                    sections = {
+                        lualine_a = {'mode'},
+                        lualine_b = {'branch', 'diagnostics'},
+                        lualine_c = {'filename'},
+                        lualine_x = {'encoding', 'fileformat', 'filetype'},
+                        lualine_y = {'progress'},
+                        lualine_z = {'location'}
+                    }
+                }
+            end
+        }
+
     },
     -- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.
